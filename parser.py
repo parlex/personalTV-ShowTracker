@@ -4,6 +4,18 @@ from HTMLParser import HTMLParser
 from findShows import IMDBShowInfo as imdb
 import urllib2 as url, json
 
+# Favourite shows
+favs = open('myshows.txt', 'r')
+
+# List of favourite shows and filtering away empty strings
+showList = filter(None, favs.read().split("\n"))
+
+print getPrettyPrint(showList)
+
+# Closing file
+favs.close()
+
+
 class IMDBHTMLParser(HTMLParser):
     def __init__(self):
         HTMLParser.__init__(self)
@@ -44,27 +56,43 @@ class IMDBHTMLParser(HTMLParser):
         if self.inTcol and self.inTRow:
             self.current.append(data)
 
-# Gets the show's info
-show = imdb("suits")
+# Returns a shows schedule-data
+def getShowData(show):
+   showInfo = imdb(show)
 
-# Creates the url for the tvschedule of the show
-baseurl = "http://www.imdb.com/title/{0}/tvschedule".format(show.getID())
+   # Creates the url for the tvschedule of the show
+   baseurl = "http://www.imdb.com/title/{0}/tvschedule".format(showInfo.getID())
 
-# Fetches the html of the url
-response = url.urlopen(baseurl)
-html = response.read()
+   # Fetches the html of the url
+   response = url.urlopen(baseurl)
+   html = response.read()
+   
+   # Starts the parser and feeds the html
+   parser = IMDBHTMLParser()
+   parsedData = parser.feed(html)
 
+   return parser.data
 
-# Starts the parser and feeds the html
-parser = IMDBHTMLParser()
-parsedData = parser.feed(html)
+# Returns a formatted string of the output
+def getPrettyPrint(showList):
+   # Output string
+   output = ""
 
-# Prints to test if it works
-for dataentry in parser.data:
-    date = dataentry[0]
-    time = dataentry[1]
-    channel = dataentry[2]
-    name = dataentry[3]
-    episode = dataentry[5]
+   for show in showList:
+      output += "{0}\n##############\n".format(show.upper())
+      count = 0
+      # Name of previous episode - to ensure no duplicates
+      prevname = ""
+      
+      # Goes through every entry where a show is aired and adds it to the output
+      for entry in getShowData(show):
+         count += 1
+         # If episode isn't already printed
+         if prevname != entry[3]:
+            output += "{0}. {1} @ {2} - {3} {4}\n".format(count, entry[0], entry[1], entry[3], entry [5]) 
+         # Update previous
+         prevname = entry[3]
 
-    print "Date : {0}\nTime: {1}\nName: {2} {3}\n\n".format(date, time, name, episode)
+      output += "\n"
+
+   return output
