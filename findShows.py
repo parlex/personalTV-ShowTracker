@@ -2,7 +2,7 @@
 
 import urllib, sys
 
-class IMDBShowInfo():
+class ShowInfo():
    def __init__(self, showname):
       # Baseurl
       self.baseurl = "http://www.omdbapi.com/?"

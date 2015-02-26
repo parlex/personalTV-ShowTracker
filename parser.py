@@ -1,7 +1,7 @@
 #!/usr/bin/python
 
 from HTMLParser import HTMLParser
-from findShows import IMDBShowInfo as imdb
+from findShows import ShowInfo as mdb
 import urllib2 as url, json
 
 class IMDBHTMLParser(HTMLParser):
@@ -46,7 +46,7 @@ class IMDBHTMLParser(HTMLParser):
 
 # Returns a shows schedule-data
 def getShowData(show):
-   showInfo = imdb(show)
+   showInfo = mdb(show)
 
    # Creates the url for the tvschedule of the show
    baseurl = "http://www.imdb.com/title/{0}/tvschedule".format(showInfo.getID())
@@ -60,6 +60,29 @@ def getShowData(show):
    parsedData = parser.feed(html)
 
    return parser.data
+
+# Creates json of showlists
+def getJSONData(showList):
+    data = {}
+    for show in showList:
+        # Temporary dictionary that should store show-dataentries
+        tmp = {}       
+        # Name of previous episode - to ensure no duplicates
+        prevname = ""
+        # Goes through every entry where a show is aired and adds it to the output
+        for entry in getShowData(show):
+            # If episode isn't already stored
+            if prevname != entry[3]:
+                tmp['date'] = entry[0]
+                tmp['time'] = entry[1]
+                tmp['name'] = entry[3]
+                tmp['episode'] = entry[5]
+            prevname = entry[3]
+
+        data[show] = tmp
+
+    return json.dumps(data)
+    
 
 # Returns a formatted string of the output
 def getPrettyPrint(showList):
@@ -87,11 +110,13 @@ def getPrettyPrint(showList):
 
 # Favourite shows
 favs = open('myshows.txt', 'r')
+schedule = open('showSchedule.json', 'w')
 
 # List of favourite shows and filtering away empty strings
 showList = filter(None, favs.read().split("\n"))
 
-print getPrettyPrint(showList)
+schedule.write(getJSONData(showList))
 
-# Closing file
+# Closing files
 favs.close()
+schedule.close()
