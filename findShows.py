@@ -42,23 +42,3 @@ class IMDBShowInfo():
    # Returns the show ID on IMDB
    def getID(self):
       return self.showDict.get("imdbID")
-
-###################
-# example usage
-###################
-#data = IMDBShowInfo("suits")
-#
-#print data.showDict
-#print data.getTitle()
-#print data.getPoster()
-#print data.getRating()
-#print data.getID()
-
-
-# gives output : 
-# 
-# {'Poster': 'http', 'imdbID': 'tt1632701', 'imdbRating': '8.8', 'Title': 'Suits'}
-# Suits
-# http
-# 8.8
-# tt1632701
