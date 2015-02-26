@@ -1,2 +1,2 @@
-# IMDB Schedule Parser
-This is a program to get the dates of when your favourite shows airs.
+# Personalized TV-Show tracker
+This is a program to get personalized information from imdb about the tv shows you like
