@@ -2,6 +2,7 @@
 
 from HTMLParser import HTMLParser
 import urllib2 as url
+import json
 
 response = url.urlopen("http://www.imdb.com/title/tt1358522/tvschedule")
 html = response.read()
@@ -65,7 +66,12 @@ class IMDBHTMLParser(HTMLParser):
 parser = IMDBHTMLParser()
 parsedData = parser.feed(html)
 
-print parser.data
-print parser.startTag
-print parser.endTag
+for dataentry in parser.data:
+    date = dataentry[0]
+    time = dataentry[1]
+    channel = dataentry[2]
+    name = dataentry[3]
+    episode = dataentry[5]
+
+    print "Date : {0}\nTime: {1}\nName: {2} {3}\n\n".format(date, time, name, episode)
 
