@@ -4,18 +4,6 @@ from HTMLParser import HTMLParser
 from findShows import IMDBShowInfo as imdb
 import urllib2 as url, json
 
-# Favourite shows
-favs = open('myshows.txt', 'r')
-
-# List of favourite shows and filtering away empty strings
-showList = filter(None, favs.read().split("\n"))
-
-print getPrettyPrint(showList)
-
-# Closing file
-favs.close()
-
-
 class IMDBHTMLParser(HTMLParser):
     def __init__(self):
         HTMLParser.__init__(self)
@@ -96,3 +84,14 @@ def getPrettyPrint(showList):
       output += "\n"
 
    return output
+
+# Favourite shows
+favs = open('myshows.txt', 'r')
+
+# List of favourite shows and filtering away empty strings
+showList = filter(None, favs.read().split("\n"))
+
+print getPrettyPrint(showList)
+
+# Closing file
+favs.close()
