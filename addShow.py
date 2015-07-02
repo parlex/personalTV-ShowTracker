@@ -1,17 +1,19 @@
 #!/usr/bin/python
 import sys, os
+shows = 'myshows.txt' 
 
 # Opens file for appending and appends parameter given
 def addShow(showName):
-    with open('myshows.txt', 'a') as favs:
+    with open(shows, 'a') as favs:
         favs.write(showName + "\n")
         favs.close()
 
 # Deletes a show in the file, name of show given as parameter.
 def deleteShow(showName):
     # It didn't work to edit in the file so had to make a new one...
-    with open('myshows.txt', 'r') as fav:
-        with open('myshows2.txt', 'w+') as favs:
+    tmpFile = 'tmp.txt'
+    with open(shows, 'r') as fav:
+        with open(tmpFile, 'w+') as favs:
             for line in fav:
                 if not showName in line: 
                     favs.write(line)
@@ -20,8 +22,8 @@ def deleteShow(showName):
             favs.close()
     fav.close()
 
-    os.system('rm myshows.txt')
-    os.system('mv myshows2.txt myshows.txt')
+    os.remove(shows)
+    os.rename(tmpFile, shows)
 
 # Formats the text explaining the commands.
 def commands():
