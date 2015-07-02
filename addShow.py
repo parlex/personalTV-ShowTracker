@@ -10,20 +10,17 @@ def addShow(showName):
 
 # Deletes a show in the file, name of show given as parameter.
 def deleteShow(showName):
-    # It didn't work to edit in the file so had to make a new one...
-    tmpFile = 'tmp.txt'
-    with open(shows, 'r') as fav:
-        with open(tmpFile, 'w+') as favs:
-            for line in fav:
-                if not showName in line: 
-                    favs.write(line)
-                else:
-                    print('Deleted entry for show with name ' + showName)
-            favs.close()
-    fav.close()
+    with open(shows, 'r') as favs:
+        linelist = favs.readlines()
+        favs.close()
 
-    os.remove(shows)
-    os.rename(tmpFile, shows)
+    with open(shows, 'w') as favs:
+        for line in linelist:
+            if not showName in line:
+                favs.write(line)
+            else:
+                print('Deleted entry for show with name ' + showName)
+        favs.close()
 
 # Formats the text explaining the commands.
 def commands():
